@@ -4,27 +4,27 @@ import wikipediaapi  # гугл в вики
 import webbrowser  # работа с использованием браузера 
 import os  # работа с файловой системой
 
-class VoiceAssistant:
+class VoiceAssistant: #определение класса
     name = ""
     sex = ""
     speech_language = ""
     recognition_language = ""
 
-def setup_assistant_voice():
+def setup_assistant_voice():  #настройки ассистента
     voices = ttsEngine.getProperty("voices")
     assistant.speech_language == "en"
     assistant.recognition_language = "en-US"
     assistant.sex == "female"
     ttsEngine.setProperty("voice", voices[1].id)
         
-def record_and_recognize_audio(*args: tuple):
+def record_and_recognize_audio(*args: tuple):  #записывание с микрофона и распознавание
    
     with microphone:
         recognized_data = ""
         recognizer.adjust_for_ambient_noise(microphone, duration=2)
 
         try:
-            print("Listening...")
+            print("Говорите")
             audio = recognizer.listen(microphone, 5, 5)
 
             with open("microphone-results.wav", "wb") as file:
@@ -34,7 +34,7 @@ def record_and_recognize_audio(*args: tuple):
             play_voice_assistant_speech("Can you check if your microphone is on, please?")
             return
         try:
-            print("One moment...")
+            print("Обработка")
             recognized_data = recognizer.recognize_google(audio, language=assistant.recognition_language).lower()
 
         except speech_recognition.UnknownValueError:
@@ -42,17 +42,17 @@ def record_and_recognize_audio(*args: tuple):
 
         return recognized_data
 
-def play_voice_assistant_speech(text_to_speech):
+def play_voice_assistant_speech(text_to_speech): #произведение текста ассистентом
     ttsEngine.say(str(text_to_speech))
     ttsEngine.runAndWait()
 
-def play_greetings(*args: tuple):
+def play_greetings(*args: tuple): #приветствие
     greetings = [
         ("Hello, {}! "),
     ]
     play_voice_assistant_speech(greetings)
 
-def play_farewell_and_quit(*args: tuple):
+def play_farewell_and_quit(*args: tuple): #прощание
     farewells = [
         ("See you soon, {}!")
     ]
@@ -60,7 +60,7 @@ def play_farewell_and_quit(*args: tuple):
     ttsEngine.stop()
     quit()
 
-def search_for_term_on_google(*args: tuple):
+def search_for_term_on_google(*args: tuple): #поиск в гугле
     if not args[0]: return
     search_term = " ".join(args[0])
 
@@ -87,14 +87,14 @@ def search_for_term_on_google(*args: tuple):
     print(search_results)
     play_voice_assistant_speech(("Here is what I found for {}").format(search_term))
 
-def search_for_video_on_youtube(*args: tuple):
+def search_for_video_on_youtube(*args: tuple): #поиск в ютубе
     if not args[0]: return
     search_term = " ".join(args[0])
     url = "https://www.youtube.com/results?search_query=" + search_term
     webbrowser.get().open(url)
     play_voice_assistant_speech(("Here is what I found for {}").format(search_term))
 
-def search_for_definition_on_wikipedia(*args: tuple):
+def search_for_definition_on_wikipedia(*args: tuple): #поиск в википедии
     if not args[0]: return
     search_term = " ".join(args[0])
     wiki = wikipediaapi.Wikipedia(assistant.speech_language) #установка языка
